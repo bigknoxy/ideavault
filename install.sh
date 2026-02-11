@@ -37,7 +37,7 @@ get_download_name() {
     local arch="$2"
     
     if [ "$os" = "linux" ]; then
-        echo "ideavault-${arch}-unknown-linux-gnu.tar.gz"
+        echo "ideavault-${arch}-unknown-linux-musl.tar.gz"
     elif [ "$os" = "macos" ]; then
         echo "ideavault-${arch}-apple-darwin.tar.gz"
     fi
