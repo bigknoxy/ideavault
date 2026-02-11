@@ -1,0 +1,23 @@
+# Generated files
+target/
+Cargo.lock
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+*.o
+*.a
+*.so
+*.dylib
+
+# Debug files
+*.pdb
+*.dSYM/
