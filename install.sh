@@ -90,7 +90,16 @@ fi
 
 rm -rf "$TEMP_DIR"
 
+echo ""
 echo "Installation successful!"
+echo ""
+echo "Installed files:"
+echo "  - Binary: $INSTALL_DIR/ideavault"
+echo "  - Data: ~/.local/share/ideavault/"
+echo "  - Cache: ~/.cache/ideavault/"
+echo ""
+echo "To uninstall, run:"
+echo "  curl -fsSL https://raw.githubusercontent.com/bigknoxy/ideavault/main/uninstall.sh | bash"
 echo ""
 echo "Verifying installation:"
 ideavault --help
