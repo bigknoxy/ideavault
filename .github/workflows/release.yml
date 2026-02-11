@@ -30,22 +30,6 @@ jobs:
       - name: Create tar.gz for Linux x86_64
         run: tar -czf ideavault-x86_64-unknown-linux-gnu.tar.gz -C target/release/ ideavault
 
-      - name: Build macOS x86_64 binary
-        uses: docker://messense/rust-musl-cross:latest
-        with:
-          args: cargo build --release --target x86_64-unknown-linux-musl
-
-      - name: Build macOS arm64 binary
-        uses: docker://messense/rust-musl-cross:latest
-        with:
-          args: cargo build --release --target aarch64-unknown-linux-musl
-
-      - name: Create tar.gz for macOS x86_64
-        run: tar -czf ideavault-x86_64-apple-darwin.tar.gz -C target/x86_64-unknown-linux-musl/release/ ideavault
-
-      - name: Create tar.gz for macOS arm64
-        run: tar -czf ideavault-aarch64-apple-darwin.tar.gz -C target/aarch64-unknown-linux-musl/release/ ideavault
-
       - name: Create checksums
         run: sha256sum *.tar.gz > checksums.txt
 
