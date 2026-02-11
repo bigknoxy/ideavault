@@ -41,6 +41,26 @@ cargo build --release
 ./target/release/ideavault --help
 ```
 
+## Uninstallation
+
+To uninstall IdeaVault:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bigknoxy/ideavault/main/uninstall.sh | bash
+```
+
+### Options
+
+- `--dry-run` Preview what will be removed without actually removing anything
+- `--keep-data` Keep the data directory (~/.local/share/ideavault/)
+- `--force` Skip confirmation prompts
+
+### What gets removed
+
+- Binary: `/usr/local/bin/ideavault`
+- Data: `~/.local/share/ideavault/`
+- Cache: `~/.cache/ideavault/`
+
 ## License
 
 MIT
