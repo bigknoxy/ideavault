@@ -4,8 +4,12 @@ use clap::{Args, Parser};
 #[derive(Parser)]
 #[command(name = "ideavault")]
 #[command(about = "A CLI tool for managing ideas and projects")]
-#[command(version = "0.1.0")]
+#[command(version)]
 pub struct Cli {
+    /// Generate markdown help documentation
+    #[arg(long, hide = true)]
+    pub markdown_help: bool,
+
     #[command(subcommand)]
     pub command: Commands,
 }

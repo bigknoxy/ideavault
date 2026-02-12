@@ -1,0 +1,48 @@
+name: Update Documentation
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for git-cliff
+          
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Generate CLI documentation
+        run: |
+          mkdir -p docs
+          cargo run --release -- --markdown-help > docs/CommandLineHelp.md
+          
+      - name: Generate Changelog
+        uses: orhun/git-cliff-action@v3
+        with:
+          config: cliff.toml
+          args: --verbose --bump
+        env:
+          OUTPUT: CHANGELOG.md
+          
+      - name: Commit documentation changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update documentation for ${{ github.ref_name }} [skip ci]"
+          file_pattern: 'docs/*.md CHANGELOG.md'
+          
+      - name: Update Release Notes
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: CHANGELOG.md
+          append_body: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

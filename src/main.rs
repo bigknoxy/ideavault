@@ -2,8 +2,16 @@ use anyhow::Result;
 use clap::Parser;
 use ideavault::cli::Cli;
 use ideavault::commands::execute_search;
+use std::env;
 
 fn main() -> Result<()> {
+    // Check for markdown-help flag before parsing
+    let args: Vec<String> = env::args().collect();
+    if args.contains(&"--markdown-help".to_string()) {
+        clap_markdown::print_help_markdown::<Cli>();
+        return Ok(());
+    }
+
     let cli = Cli::parse();
 
     match cli.command {

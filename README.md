@@ -1,6 +1,10 @@
 # IdeaVault
 
-A CLI tool for managing ideas and projects.
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/bigknoxy/ideavault/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/bigknoxy/ideavault/actions)
+
+A CLI tool for managing ideas, projects, and tasks in one place.
 
 ## Install
 
@@ -8,58 +12,43 @@ A CLI tool for managing ideas and projects.
 curl -fsSL https://raw.githubusercontent.com/bigknoxy/ideavault/main/install.sh | bash
 ```
 
-## Usage
+## Quick Start
 
-### Ideas
+Create a new idea:
 ```bash
-ideavault idea new "My startup idea" -d "Description" -t "startup rust"
-ideavault idea list
-ideavault idea show <id>
-ideavault idea tag <id> <tags>
+ideavault idea new "Mobile app for pet tracking" -d "GPS tracker for lost pets" -t "mobile app"
 ```
 
-### Projects
+Create a new project:
 ```bash
-ideavault project new "My Project"
-ideavault project link <project-id> <idea-id>
-ideavault project ideas <project-id>
+ideavault project new "PetTracker v1" -d "Initial MVP development"
 ```
 
-### Search
+Create a task with priority and due date:
 ```bash
-ideavault search "startup"
-ideavault search "rust" --ideas
-ideavault search "cli" --with-tags rust
+ideavault task new "Design database schema" --project PetTracker --priority high --due 2025-03-01
 ```
 
-## Building from Source
-
+Link a task to a project:
 ```bash
-git clone https://github.com/bigknoxy/ideavault.git
-cd ideavault
-cargo build --release
-./target/release/ideavault --help
+ideavault project link PetTracker "Design database schema"
 ```
 
-## Uninstallation
+## Full Documentation
 
-To uninstall IdeaVault:
+- [CLI Reference](docs/CommandLineHelp.md) - Complete command documentation
+- [Usage Guide](docs/USAGE.md) - Workflow examples and best practices
+- [Changelog](CHANGELOG.md) - Release history
+
+## Uninstall
+
+To remove IdeaVault and all data:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/bigknoxy/ideavault/main/uninstall.sh | bash
 ```
 
-### Options
-
-- `--dry-run` Preview what will be removed without actually removing anything
-- `--keep-data` Keep the data directory (~/.local/share/ideavault/)
-- `--force` Skip confirmation prompts
-
-### What gets removed
-
-- Binary: `/usr/local/bin/ideavault`
-- Data: `~/.local/share/ideavault/`
-- Cache: `~/.cache/ideavault/`
+See [uninstall.sh](uninstall.sh) for options like `--keep-data` to preserve your files.
 
 ## License
 
