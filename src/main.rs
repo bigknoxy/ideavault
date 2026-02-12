@@ -13,6 +13,9 @@ fn main() -> Result<()> {
         ideavault::cli::Commands::Project(project_cmd) => {
             project_cmd.execute()?;
         }
+        ideavault::cli::Commands::Task(task_cmd) => {
+            task_cmd.execute()?;
+        }
         ideavault::cli::Commands::Search(search_args) => {
             execute_search(search_args)?;
         }

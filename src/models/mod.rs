@@ -10,12 +10,14 @@ pub mod config;
 pub mod idea;
 pub mod project;
 pub mod tag;
+pub mod task;
 
 // Re-export the main types for convenience
 pub use config::{BackupConfig, Config, OutputFormat};
 pub use idea::{Idea, IdeaStatus};
 pub use project::{Project, ProjectStatus};
 pub use tag::Tag;
+pub use task::{Task, TaskPriority, TaskStatus};
 
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;

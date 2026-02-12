@@ -7,6 +7,7 @@ pub use cli::{Cli, Commands};
 pub use models::idea::Idea;
 pub use models::project::Project;
 pub use models::tag::Tag;
+pub use models::task::Task;
 pub use storage::Storage;
 
 #[cfg(test)]
