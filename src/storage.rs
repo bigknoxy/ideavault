@@ -1,6 +1,7 @@
 use crate::models::idea::Idea;
 use crate::models::project::Project;
 use crate::models::tag::Tag;
+use crate::models::task::Task;
 use anyhow::{Context, Result};
 use directories::ProjectDirs;
 use serde_json;
@@ -13,6 +14,7 @@ pub struct Storage {
     ideas_file: PathBuf,
     projects_file: PathBuf,
     tags_file: PathBuf,
+    tasks_file: PathBuf,
 }
 
 impl Storage {
@@ -24,6 +26,7 @@ impl Storage {
         let ideas_file = data_dir.join("ideas.json");
         let projects_file = data_dir.join("projects.json");
         let tags_file = data_dir.join("tags.json");
+        let tasks_file = data_dir.join("tasks.json");
 
         // Ensure data directory exists
         fs::create_dir_all(&data_dir)
@@ -34,6 +37,7 @@ impl Storage {
             ideas_file,
             projects_file,
             tags_file,
+            tasks_file,
         })
     }
 
@@ -106,6 +110,25 @@ impl Storage {
         fs::write(&self.tags_file, content)
             .with_context(|| format!("Failed to write tags file: {:?}", self.tags_file))?;
 
+        Ok(())
+    }
+
+    pub fn load_tasks(&self) -> Result<Vec<Task>> {
+        if !self.tasks_file.exists() {
+            return Ok(Vec::new());
+        }
+        let content = fs::read_to_string(&self.tasks_file)
+            .with_context(|| format!("Failed to read tasks file: {:?}", self.tasks_file))?;
+        let tasks: Vec<Task> =
+            serde_json::from_str(&content).with_context(|| "Failed to parse tasks JSON")?;
+        Ok(tasks)
+    }
+
+    pub fn save_tasks(&self, tasks: &[Task]) -> Result<()> {
+        let content = serde_json::to_string_pretty(tasks)
+            .with_context(|| "Failed to serialize tasks to JSON")?;
+        fs::write(&self.tasks_file, content)
+            .with_context(|| format!("Failed to write tasks file: {:?}", self.tasks_file))?;
         Ok(())
     }
 }

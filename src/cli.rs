@@ -1,4 +1,4 @@
-use crate::commands::{IdeaCommands, ProjectCommands};
+use crate::commands::{IdeaCommands, ProjectCommands, TaskCommands};
 use clap::{Args, Parser};
 
 #[derive(Parser)]
@@ -16,6 +16,8 @@ pub enum Commands {
     Idea(IdeaCommands),
     /// Manage projects
     Project(ProjectCommands),
+    /// Manage tasks
+    Task(TaskCommands),
     /// Search across ideas, projects, and tags
     Search(SearchArgs),
 }
