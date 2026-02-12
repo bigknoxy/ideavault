@@ -25,24 +25,8 @@ jobs:
           mkdir -p docs
           cargo run --release -- --markdown-help > docs/CommandLineHelp.md
           
-      - name: Generate Changelog
-        uses: orhun/git-cliff-action@v3
-        with:
-          config: cliff.toml
-          args: --verbose --bump
-        env:
-          OUTPUT: CHANGELOG.md
-          
-      - name: Commit documentation changes
+      - name: Commit CLI documentation
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: update documentation for ${{ github.ref_name }} [skip ci]"
-          file_pattern: 'docs/*.md CHANGELOG.md'
-          
-      - name: Update Release Notes
-        uses: softprops/action-gh-release@v2
-        with:
-          body_path: CHANGELOG.md
-          append_body: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "docs: update CLI documentation for ${{ github.ref_name }} [skip ci]"
+          file_pattern: 'docs/CommandLineHelp.md'
