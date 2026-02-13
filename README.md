@@ -1,6 +1,6 @@
 # IdeaVault
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/bigknoxy/ideavault/releases)
+[![Version](https://img.shields.io/github/v/release/bigknoxy/ideavault)](https://github.com/bigknoxy/ideavault/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/bigknoxy/ideavault/actions)
 
