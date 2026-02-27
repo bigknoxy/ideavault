@@ -93,6 +93,42 @@ impl Task {
         self.updated_at = Utc::now();
         self
     }
+
+    /// Update the title of the task
+    pub fn update_title(&mut self, title: String) {
+        self.title = title;
+        self.updated_at = Utc::now();
+    }
+
+    /// Update the description of the task
+    pub fn update_description(&mut self, description: Option<String>) {
+        self.description = description;
+        self.updated_at = Utc::now();
+    }
+
+    /// Set the priority of the task
+    pub fn set_priority(&mut self, priority: TaskPriority) {
+        self.priority = priority;
+        self.updated_at = Utc::now();
+    }
+
+    /// Set the due date of the task
+    pub fn set_due_date(&mut self, due_date: Option<DateTime<Utc>>) {
+        self.due_date = due_date;
+        self.updated_at = Utc::now();
+    }
+
+    /// Set the status of the task
+    pub fn set_status(&mut self, status: TaskStatus) {
+        self.status = status;
+        self.updated_at = Utc::now();
+    }
+
+    /// Update tags for the task
+    pub fn update_tags(&mut self, tags: Vec<String>) {
+        self.tags = tags;
+        self.updated_at = Utc::now();
+    }
 }
 
 impl std::str::FromStr for TaskStatus {
