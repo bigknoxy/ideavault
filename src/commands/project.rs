@@ -46,6 +46,14 @@ pub struct NewProjectArgs {
     /// Optional milestone for the project
     #[arg(short = 'm', long = "milestone")]
     milestone: Option<String>,
+
+    /// Optional URL for the project
+    #[arg(long = "url")]
+    url: Option<String>,
+
+    /// Optional repository for the project
+    #[arg(long = "repo")]
+    repo: Option<String>,
 }
 
 #[derive(Args)]
@@ -133,6 +141,13 @@ impl ProjectCommands {
 
         if let Some(milestone) = &args.milestone {
             project = project.with_milestone(milestone.clone());
+        }
+
+        if let Some(url) = &args.url {
+            project = project.with_url(url.clone());
+        }
+        if let Some(repo) = &args.repo {
+            project = project.with_repo(repo.clone());
         }
 
         let mut projects = storage.load_projects().context("Failed to load projects")?;
@@ -361,6 +376,12 @@ fn print_project_summary(project: &Project) {
     if let Some(milestone) = &project.milestone {
         println!("   🎯 {}", milestone);
     }
+    if let Some(url) = &project.url {
+        println!("   URL: {}", url);
+    }
+    if let Some(repo) = &project.repo {
+        println!("   Repo: {}", repo);
+    }
     if !project.idea_ids.is_empty() {
         println!("   💡 {} idea(s)", project.idea_ids.len());
     }
@@ -384,6 +405,13 @@ fn print_project_full(project: &Project, ideas: &[Idea]) {
 
     if let Some(milestone) = &project.milestone {
         println!("Milestone: {}", milestone);
+    }
+
+    if let Some(url) = &project.url {
+        println!("  URL: {}", url);
+    }
+    if let Some(repo) = &project.repo {
+        println!("  Repo: {}", repo);
     }
 
     println!("Ideas: {} linked", project.idea_ids.len());

@@ -16,6 +16,8 @@ pub struct Project {
     pub title: String,
     pub description: Option<String>,
     pub milestone: Option<String>,
+    pub url: Option<String>,
+    pub repo: Option<String>,
     pub status: ProjectStatus,
     pub idea_ids: Vec<Uuid>,
     pub created_at: DateTime<Utc>,
@@ -30,6 +32,8 @@ impl Project {
             title,
             description: None,
             milestone: None,
+            url: None,
+            repo: None,
             status: ProjectStatus::Planning,
             idea_ids: Vec::new(),
             created_at: now,
@@ -45,6 +49,18 @@ impl Project {
 
     pub fn with_milestone(mut self, milestone: String) -> Self {
         self.milestone = Some(milestone);
+        self.updated_at = Utc::now();
+        self
+    }
+
+    pub fn with_url(mut self, url: String) -> Self {
+        self.url = Some(url);
+        self.updated_at = Utc::now();
+        self
+    }
+
+    pub fn with_repo(mut self, repo: String) -> Self {
+        self.repo = Some(repo);
         self.updated_at = Utc::now();
         self
     }
@@ -73,6 +89,16 @@ impl Project {
 
     pub fn update_milestone(&mut self, milestone: Option<String>) {
         self.milestone = milestone;
+        self.updated_at = Utc::now();
+    }
+
+    pub fn set_url(&mut self, url: Option<String>) {
+        self.url = url;
+        self.updated_at = Utc::now();
+    }
+
+    pub fn set_repo(&mut self, repo: Option<String>) {
+        self.repo = repo;
         self.updated_at = Utc::now();
     }
 

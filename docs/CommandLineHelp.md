@@ -199,6 +199,8 @@ Create a new project
 
 * `-d`, `--description <DESCRIPTION>` — Optional description for the project
 * `-m`, `--milestone <MILESTONE>` — Optional milestone for the project
+* `--url <URL>` — Optional URL for the project
+* `--repo <REPO>` — Optional repository for the project
 
 
 
