@@ -1,10 +1,10 @@
-# 🚀 IdeaVault Usage Guide
+# IdeaVault Usage Guide
 
 Welcome to **IdeaVault** — your command-line companion for capturing ideas, managing projects, and staying organized.
 
 ---
 
-## 📋 Getting Started
+## Getting Started
 
 ### First-Time Setup
 
@@ -18,7 +18,7 @@ ideavault --help
 export EDITOR="vim"        # or nano, code, emacs, etc.
 ```
 
-💡 **Pro tip:** Add the `EDITOR` export to your shell config file (`~/.bashrc`, `~/.zshrc`, etc.) so it's always available.
+**Pro tip:** Add the `EDITOR` export to your shell config file (`~/.bashrc`, `~/.zshrc`, etc.) so it's always available.
 
 ### Creating Your First Idea
 
@@ -26,13 +26,13 @@ Let's create your first idea:
 
 ```bash
 # Create a simple idea
-ideavault idea create "Build a personal knowledge base"
+ideavault idea new "Build a personal knowledge base"
 
 # Create an idea with a description
-ideavault idea create "Learn Rust programming" --description "Focus on async and web development"
+ideavault idea new "Learn Rust programming" --description "Focus on async and web development"
 
 # Create and tag it immediately
-ideavault idea create "Design a smart garden system" --tags "iot,hardware,garden"
+ideavault idea new "Design a smart garden system" --tags "iot,hardware,garden"
 ```
 
 ### Basic Concepts
@@ -41,15 +41,15 @@ Understanding these three core concepts is key to using IdeaVault effectively:
 
 | Concept | Description | Use Case |
 |---------|-------------|----------|
-| **💡 Ideas** | Fleeting thoughts, concepts, or inspiration | Capture things that excite you before you forget |
-| **📁 Projects** | Organized efforts with goals and milestones | Turn ideas into actionable work |
-| **✅ Tasks** | Concrete, actionable items | The smallest unit of work to move projects forward |
+| **Ideas** | Fleeting thoughts, concepts, or inspiration | Capture things that excite you before you forget |
+| **Projects** | Organized efforts with goals and milestones | Turn ideas into actionable work |
+| **Tasks** | Concrete, actionable items | The smallest unit of work to move projects forward |
 
 **Flow:** Ideas → Projects → Tasks
 
 ---
 
-## 🔄 Workflow Examples
+## Workflow Examples
 
 ### Pattern 1: Idea Development
 
@@ -57,19 +57,19 @@ Capture raw inspiration and refine it into actionable work:
 
 ```bash
 # 1. Brainstorm freely
-ideavault idea create "Write a blog post about productivity" --tags "writing,productivity"
+ideavault idea new "Write a blog post about productivity" --tags "writing,productivity"
 
 # 2. Refine with tags
-ideavault idea update 1 --tags "writing,productivity,blog,2024"
+ideavault idea tag <id> writing productivity blog 2024
 
 # 3. When ready to execute, mark Active
-ideavault idea update 1 --status Active
+ideavault idea status <id> Active
 
 # 4. Convert to a project when it grows
-ideavault project create "Productivity Blog Series" --description "Weekly posts on productivity techniques"
+ideavault project new "Productivity Blog Series" --description "Weekly posts on productivity techniques"
 
 # 5. Link the idea to the project
-ideavault idea update 1 --project-id 1
+ideavault project link <project-id> <idea-id>
 ```
 
 **When to use:** Capturing inspiration, incubating concepts, deciding what to work on.
@@ -81,24 +81,27 @@ ideavault idea update 1 --project-id 1
 Structure complex work with milestones and linked ideas:
 
 ```bash
-# 1. Create a project
-ideavault project create "Launch Personal Website" --description "Portfolio and blog site"
+# 1. Create a project with URL and repo
+ideavault project new "Launch Personal Website" \
+  --description "Portfolio and blog site" \
+  --url "https://mywebsite.com" \
+  --repo "https://github.com/user/website"
 
-# 2. Add a milestone
-ideavault milestone create 1 "Design Phase" --target-date 2024-02-28
+# 2. Set a milestone
+ideavault project update <project-id> --milestone "Design Phase"
 
 # 3. Link relevant ideas
-ideavault idea update 5 --project-id 1
-ideavault idea update 12 --project-id 1
+ideavault project link <project-id> <idea-id-1>
+ideavault project link <project-id> <idea-id-2>
 
 # 4. Break down into tasks
-ideavault task create 1 "Choose domain name" --priority high --due 2024-02-15
-ideavault task create 1 "Set up hosting" --priority high --due 2024-02-17
-ideavault task create 1 "Design homepage mockup" --priority medium --due 2024-02-20
+ideavault task new "Choose domain name" --project <project-id> --priority high
+ideavault task new "Set up hosting" --project <project-id> --priority high
+ideavault task new "Design homepage mockup" --project <project-id> --priority medium
 
 # 5. Track progress
-ideavault project status 1
-ideavault task list --project 1
+ideavault project show <project-id>
+ideavault task list --project <project-id>
 ```
 
 **When to use:** Multi-step initiatives, team coordination, deadline-driven work.
@@ -112,14 +115,14 @@ Apply Getting Things Done principles to your daily workflow:
 #### Daily Review Workflow
 
 ```bash
-# Morning review - see what's due today
-ideavault task list --due today
-
-# Check blocked items
+# Morning review - check blocked items
 ideavault task list --status blocked
 
 # Review high priority items
-ideavault task list --priority urgent,high
+ideavault task list --priority high
+
+# Check overdue tasks
+ideavault task list --overdue
 ```
 
 #### Context-Based Filtering
@@ -144,29 +147,26 @@ ideavault task list --tag @errand
 
 ```bash
 # Create with priority
-ideavault task create 1 "Fix critical bug" --priority urgent
-ideavault task create 1 "Update documentation" --priority high
-ideavault task create 1 "Refactor old code" --priority medium
-ideavault task create 1 "Research new tools" --priority low
+ideavault task new "Fix critical bug" --priority urgent
+ideavault task new "Update documentation" --priority high
+ideavault task new "Refactor old code" --priority medium
+ideavault task new "Research new tools" --priority low
 
 # Change priority as needed
-ideavault task update 5 --priority urgent
+ideavault task priority <task-id> urgent
 ```
 
 #### Status Workflow
 
 ```bash
 # Start working on a task
-ideavault task update 5 --status inprogress
+ideavault task status <task-id> inprogress
 
 # Mark complete
-ideavault task update 5 --status done
+ideavault task status <task-id> done
 
-# Mark blocked (add a note why)
-ideavault task update 5 --status blocked --description "Waiting for API access"
-
-# Daily sweep - what's done?
-ideavault task list --status done --since yesterday
+# Mark blocked
+ideavault task status <task-id> blocked
 ```
 
 **When to use:** Daily productivity, context switching, prioritization.
@@ -179,47 +179,50 @@ See the full power of interconnected workflows:
 
 ```bash
 # 1. Capture an idea during brainstorming
-ideavault idea create "Create a CLI tool for notes" \
-  --tags "programming,cli,golang" \
+ideavault idea new "Create a CLI tool for notes" \
+  --tags "programming,cli,rust" \
   --description "Could use SQLite for storage"
 
-# 2. When committed, mark Active and create project
-ideavault idea update 42 --status Active
-ideavault project create "IdeaVault CLI" \
-  --description "Note-taking tool with projects and tasks"
+# 2. When committed, mark Active
+ideavault idea status <idea-id> Active
 
-# 3. Link the idea to the project
-ideavault idea update 42 --project-id 7
+# 3. Create a project
+ideavault project new "IdeaVault CLI" \
+  --description "Note-taking tool with projects and tasks" \
+  --repo "https://github.com/user/ideavault"
 
-# 4. Add tasks to the project
-ideavault task create 7 "Design database schema" --priority high
-ideavault task create 7 "Implement idea commands" --priority high
-ideavault task create 7 "Write documentation" --priority medium
+# 4. Link the idea to the project
+ideavault project link <project-id> <idea-id>
 
-# 5. View everything together
-ideavault project show 7          # See project + linked ideas + tasks
-ideavault idea show 42             # See idea + linked project
+# 5. Add tasks to the project
+ideavault task new "Design database schema" --project <project-id> --priority high
+ideavault task new "Implement idea commands" --project <project-id> --priority high
+ideavault task new "Write documentation" --project <project-id> --priority medium
+
+# 6. View everything together
+ideavault project show <project-id>    # See project + linked ideas
+ideavault idea show <idea-id>           # See idea details
 ```
 
 **When to use:** Complex initiatives, long-term planning, maintaining context.
 
 ---
 
-## 📊 Status Reference Table
+## Status Reference Table
 
 Here's the complete reference for all valid statuses:
 
 | Entity | Valid Statuses | Description |
 |--------|----------------|-------------|
-| **💡 Ideas** | `Brainstorming` | Initial capture, not yet committed |
+| **Ideas** | `Brainstorming` | Initial capture, not yet committed |
 | | `Active` | Currently being developed |
 | | `Completed` | Idea implemented or done |
 | | `Archived` | No longer relevant, kept for reference |
-| **📁 Projects** | `Planning` | In design/requirements phase |
+| **Projects** | `Planning` | In design/requirements phase |
 | | `InProgress` | Actively being worked on |
 | | `Completed` | All milestones achieved |
 | | `OnHold` | Paused, may resume later |
-| **✅ Tasks** | `todo` | Ready to be worked on |
+| **Tasks** | `todo` | Ready to be worked on |
 | | `inprogress` | Currently being worked on |
 | | `blocked` | Cannot proceed (external dependency) |
 | | `done` | Completed |
@@ -231,65 +234,67 @@ Here's the complete reference for all valid statuses:
 
 ---
 
-## 💡 Tips & Tricks
+## Tips & Tricks
 
 ### Tagging Strategies
 
 **Hierarchical Tags:**
 ```bash
 # Use dot notation for categories
-ideavault idea create "New idea" --tags "work.project-a,tech.backend"
-ideavault idea create "Another idea" --tags "work.project-b,tech.frontend"
+ideavault idea new "New idea" --tags "work.project-a,tech.backend"
+ideavault idea new "Another idea" --tags "work.project-b,tech.frontend"
 
 # Search by prefix
-ideavault idea list --tag "work."    # All work items
+ideavault idea list --tag work    # All work items
 ```
 
 **Status + Context Tags:**
 ```bash
 # Combine status and context
-ideavault task create 1 "Call dentist" --tags "@phone,health,urgent"
-ideavault task create 1 "Buy groceries" --tags "@errand,home"
+ideavault task new "Call dentist" --tags "@phone,health,urgent"
+ideavault task new "Buy groceries" --tags "@errand,home"
 ```
 
 **Date-Based Tags:**
 ```bash
 # Tag with timeframes
-ideavault idea create "Plan vacation" --tags "2024,q2,travel"
+ideavault idea new "Plan vacation" --tags "2024,q2,travel"
 # Makes it easy to find: ideavault idea list --tag 2024
 ```
 
 ### Effective Searching
 
 ```bash
-# Search titles and descriptions
-ideavault idea search "blog"
+# Search across all entities
+ideavault search "blog"
 
-# Filter by multiple criteria
-ideavault task list --project 1 --status todo --priority high
+# Search only ideas
+ideavault search "blog" --ideas
 
-# Find abandoned ideas
-ideavault idea list --status Brainstorming --older-than 30d
+# Search only projects
+ideavault search "website" --projects
 
-# Recent activity
-ideavault idea list --since 2024-02-01
+# Search with status filter
+ideavault search "api" --status Active
+
+# Search with tag filter
+ideavault search "rust" --with-tags programming
 ```
 
 ### Using Due Dates Effectively
 
 ```bash
-# Set specific dates
-ideavault task create 1 "Submit report" --due 2024-02-15
+# Set a due date when creating a task
+ideavault task new "Submit report" --due 2024-02-15
 
-# Use relative dates
-ideavault task create 1 "Weekly review" --due friday
-ideavault task create 1 "Tomorrow's task" --due tomorrow
+# Set due date on existing task
+ideavault task due <task-id> 2024-02-15
+
+# Clear a due date
+ideavault task due <task-id> clear
 
 # Find overdue items
 ideavault task list --overdue
-
-# Upcoming deadlines
-ideavault task list --due-this-week
 ```
 
 ### Editor Integration
@@ -304,32 +309,39 @@ export EDITOR="code --wait"   # VS Code (wait flag is important!)
 export EDITOR="emacs"         # Emacs
 ```
 
-💡 **Important:** For VS Code and similar GUI editors, use the `--wait` flag so IdeaVault waits for you to close the file before continuing.
+**Important:** For VS Code and similar GUI editors, use the `--wait` flag so IdeaVault waits for you to close the file before continuing.
 
 ---
 
-## 📝 Common Commands Reference
+## Common Commands Reference
 
 ### Ideas
 
 | Command | Description |
 |---------|-------------|
-| `ideavault idea create "title"` | Create a new idea |
+| `ideavault idea new "title"` | Create a new idea |
 | `ideavault idea list` | List all ideas |
+| `ideavault idea list --status Active` | List ideas by status |
+| `ideavault idea list --tag <tag>` | List ideas by tag |
 | `ideavault idea show <id>` | Show idea details |
-| `ideavault idea update <id> --status Active` | Update idea status |
-| `ideavault idea search "keyword"` | Search ideas |
+| `ideavault idea status <id> <status>` | Update idea status |
+| `ideavault idea tag <id> <tags...>` | Update idea tags |
+| `ideavault idea edit <id>` | Edit idea in $EDITOR |
 | `ideavault idea delete <id>` | Delete an idea |
 
 ### Projects
 
 | Command | Description |
 |---------|-------------|
-| `ideavault project create "name"` | Create a new project |
+| `ideavault project new "name"` | Create a new project |
+| `ideavault project new "name" --url <url> --repo <repo>` | Create with URLs |
 | `ideavault project list` | List all projects |
-| `ideavault project show <id>` | Show project with ideas & tasks |
+| `ideavault project show <id>` | Show project with linked ideas |
 | `ideavault project update <id> [flags]` | Update project fields |
 | `ideavault project status <id> <status>` | Quick status update |
+| `ideavault project link <project-id> <idea-id>` | Link idea to project |
+| `ideavault project unlink <project-id> <idea-id>` | Unlink idea from project |
+| `ideavault project ideas <id>` | List linked ideas |
 | `ideavault project delete <id>` | Delete a project |
 
 #### Updating Projects
@@ -350,7 +362,7 @@ ideavault project update <id> --clear url --clear milestone
 ideavault project update <id> --title "Updated" --clear description
 
 # Update status
-ideavault project update <id> --status Active
+ideavault project update <id> --status InProgress
 ```
 
 **Available flags:**
@@ -364,33 +376,47 @@ ideavault project update <id> --status Active
 
 **Quick status update:**
 ```bash
-ideavault project status <id> Active
+ideavault project status <id> InProgress
 ```
 
 ### Tasks
 
 | Command | Description |
 |---------|-------------|
-| `ideavault task create <project-id> "title"` | Create a task |
+| `ideavault task new "title"` | Create a new task |
+| `ideavault task new "title" --project <id>` | Create task linked to project |
+| `ideavault task new "title" --priority high --due 2024-02-15` | Create with priority and due date |
 | `ideavault task list` | List all tasks |
 | `ideavault task list --project <id>` | List project tasks |
-| `ideavault task update <id> --status done` | Update task status |
+| `ideavault task list --status todo` | List tasks by status |
+| `ideavault task list --priority high` | List tasks by priority |
+| `ideavault task list --overdue` | List overdue tasks |
+| `ideavault task show <id>` | Show task details |
+| `ideavault task status <id> <status>` | Update task status |
+| `ideavault task priority <id> <priority>` | Update task priority |
+| `ideavault task due <id> <date>` | Set due date |
+| `ideavault task link-project <task-id> <project-id>` | Link task to project |
+| `ideavault task link-idea <task-id> <idea-id>` | Link task to idea |
+| `ideavault task edit <id>` | Edit task in $EDITOR |
 | `ideavault task delete <id>` | Delete a task |
 
-### Milestones
+### Search
 
 | Command | Description |
 |---------|-------------|
-| `ideavault milestone create <project-id> "name"` | Add milestone |
-| `ideavault milestone list <project-id>` | List milestones |
-| `ideavault milestone complete <id>` | Mark milestone complete |
+| `ideavault search "query"` | Search across all entities |
+| `ideavault search "query" --ideas` | Search only ideas |
+| `ideavault search "query" --projects` | Search only projects |
+| `ideavault search "query" --tags` | Search only tags |
+| `ideavault search "query" --status Active` | Filter by status |
+| `ideavault search "query" --with-tags tag1 tag2` | Filter by tags |
 
 ---
 
-## 🎯 Quick Start Checklist
+## Quick Start Checklist
 
 - [ ] Set your `EDITOR` environment variable
-- [ ] Create your first idea with `ideavault idea create`
+- [ ] Create your first idea with `ideavault idea new`
 - [ ] Add tags to organize your ideas
 - [ ] Create a project to work on
 - [ ] Link an idea to your project
@@ -401,6 +427,6 @@ ideavault project status <id> Active
 
 ---
 
-**Happy organizing!** 🎉
+**Happy organizing!**
 
 For more details on specific commands, run `ideavault <command> --help`.

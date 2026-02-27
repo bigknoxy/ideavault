@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-02-27
+
+### Features
+
+- Add `project update` command for updating project fields
+- Add `--url` and `--repo` flags to `project new` command
+- Add `--clear <field>` flag to `project update` for clearing optional fields
+- Add CI workflow for automated PR checks (lint, build, test)
+
+### Documentation
+
+- Add OpenCode skills for project conventions and release process
+- Fix USAGE.md command examples (use `new` instead of `create`)
+- Update AGENTS.md with current version
+
+## [0.2.3] - 2026-02-20
+
+### Bug Fixes
+
+- Various stability improvements
+
+## [0.2.2] - 2026-02-18
+
+### Bug Fixes
+
+- Minor bug fixes and improvements
+
+## [0.2.1] - 2026-02-15
+
+### Bug Fixes
+
+- Minor bug fixes
+
 ## [0.2.0] - 2026-02-12
 
 ### Features

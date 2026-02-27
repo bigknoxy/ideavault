@@ -8,7 +8,7 @@ Guidelines for AI coding agents working on the IdeaVault project.
 
 - **Name**: IdeaVault
 - **Type**: Rust CLI Tool
-- **Version**: 0.2.0 (see Cargo.toml)
+- **Version**: 0.2.4 (see Cargo.toml)
 - **Description**: A CLI tool for managing ideas, projects, and tasks
 
 ---
