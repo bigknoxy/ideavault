@@ -23,6 +23,12 @@ impl Storage {
             .context("Failed to get project directories")?;
 
         let data_dir = proj_dirs.data_dir().to_path_buf();
+        Self::new_with_path(data_dir)
+    }
+
+    /// Create storage with a custom data directory path.
+    /// Useful for testing with temporary directories.
+    pub fn new_with_path(data_dir: PathBuf) -> Result<Self> {
         let ideas_file = data_dir.join("ideas.json");
         let projects_file = data_dir.join("projects.json");
         let tags_file = data_dir.join("tags.json");

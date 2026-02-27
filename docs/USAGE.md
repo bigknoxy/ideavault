@@ -328,9 +328,44 @@ export EDITOR="emacs"         # Emacs
 | `ideavault project create "name"` | Create a new project |
 | `ideavault project list` | List all projects |
 | `ideavault project show <id>` | Show project with ideas & tasks |
-| `ideavault project update <id> --status InProgress` | Update project |
-| `ideavault project status <id>` | Get project progress summary |
+| `ideavault project update <id> [flags]` | Update project fields |
+| `ideavault project status <id> <status>` | Quick status update |
 | `ideavault project delete <id>` | Delete a project |
+
+#### Updating Projects
+
+Update one or more fields of an existing project:
+
+```bash
+# Update title
+ideavault project update <id> --title "New Title"
+
+# Update multiple fields at once
+ideavault project update <id> --title "New" --url "https://example.com" --milestone "v1.0"
+
+# Clear optional fields
+ideavault project update <id> --clear url --clear milestone
+
+# Mix updates and clears
+ideavault project update <id> --title "Updated" --clear description
+
+# Update status
+ideavault project update <id> --status Active
+```
+
+**Available flags:**
+- `--title` - Project title
+- `--description` - Project description
+- `--milestone` - Current milestone
+- `--url` - Project URL
+- `--repo` - Repository URL
+- `--status` - Project status
+- `--clear <field>` - Clear an optional field (description, milestone, url, repo)
+
+**Quick status update:**
+```bash
+ideavault project status <id> Active
+```
 
 ### Tasks
 

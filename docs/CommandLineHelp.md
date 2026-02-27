@@ -22,6 +22,7 @@ This document contains the help content for the `ideavault` command-line program
 * [`ideavault project ideas`↴](#ideavault-project-ideas)
 * [`ideavault project status`↴](#ideavault-project-status)
 * [`ideavault project delete`↴](#ideavault-project-delete)
+* [`ideavault project update`↴](#ideavault-project-update)
 * [`ideavault task`↴](#ideavault-task)
 * [`ideavault task new`↴](#ideavault-task-new)
 * [`ideavault task list`↴](#ideavault-task-list)
@@ -184,6 +185,7 @@ Manage projects
 * `ideas` — List all ideas linked to a project
 * `status` — Update the status of a project
 * `delete` — Delete a project with confirmation
+* `update` — Update project fields (title, description, milestone, url, repo, status)
 
 
 
@@ -294,6 +296,28 @@ Delete a project with confirmation
 ###### **Options:**
 
 * `-f`, `--force` — Skip confirmation prompt
+
+
+
+## `ideavault project update`
+
+Update project fields (title, description, milestone, url, repo, status)
+
+**Usage:** `ideavault project update [OPTIONS] <ID>`
+
+###### **Arguments:**
+
+* `<ID>` — Project ID to update
+
+###### **Options:**
+
+* `-t`, `--title <TITLE>` — New title
+* `-d`, `--description <DESCRIPTION>` — New description
+* `-m`, `--milestone <MILESTONE>` — New milestone
+* `--url <URL>` — New URL
+* `--repo <REPO>` — New repository URL
+* `-s`, `--status <STATUS>` — New status
+* `--clear <FIELD>` — Clear one or more optional fields (description, milestone, url, repo)
 
 
 

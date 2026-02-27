@@ -32,6 +32,8 @@ pub enum ProjectSubcommand {
     Status(StatusArgs),
     /// Delete a project with confirmation
     Delete(DeleteProjectArgs),
+    /// Update project fields (title, description, milestone, url, repo, status)
+    Update(UpdateProjectArgs),
 }
 
 #[derive(Args)]
@@ -54,6 +56,40 @@ pub struct NewProjectArgs {
     /// Optional repository for the project
     #[arg(long = "repo")]
     repo: Option<String>,
+}
+
+#[derive(Args)]
+pub struct UpdateProjectArgs {
+    /// Project ID to update
+    pub id: Uuid,
+
+    /// New title
+    #[arg(short = 't', long = "title")]
+    pub title: Option<String>,
+
+    /// New description
+    #[arg(short = 'd', long = "description")]
+    pub description: Option<String>,
+
+    /// New milestone
+    #[arg(short = 'm', long = "milestone")]
+    pub milestone: Option<String>,
+
+    /// New URL
+    #[arg(long = "url")]
+    pub url: Option<String>,
+
+    /// New repository URL
+    #[arg(long = "repo")]
+    pub repo: Option<String>,
+
+    /// New status
+    #[arg(short = 's', long = "status")]
+    pub status: Option<ProjectStatus>,
+
+    /// Clear one or more optional fields (description, milestone, url, repo)
+    #[arg(long = "clear", value_name = "FIELD")]
+    pub clear: Vec<String>,
 }
 
 #[derive(Args)]
@@ -129,6 +165,7 @@ impl ProjectCommands {
             ProjectSubcommand::Ideas(args) => Self::list_project_ideas(&storage, args),
             ProjectSubcommand::Status(args) => Self::update_status(&storage, args),
             ProjectSubcommand::Delete(args) => Self::delete_project(&storage, args),
+            ProjectSubcommand::Update(args) => Self::update_project(&storage, args),
         }
     }
 
@@ -307,6 +344,112 @@ impl ProjectCommands {
 
         println!("✅ Updated status for project {}:", args.id);
         println!("   {} → {}", old_status, args.status);
+        Ok(())
+    }
+
+    pub fn update_project(storage: &Storage, args: &UpdateProjectArgs) -> Result<()> {
+        const CLEARABLE_FIELDS: [&str; 4] = ["description", "milestone", "url", "repo"];
+
+        // Validate clear fields
+        for field in &args.clear {
+            if !CLEARABLE_FIELDS.contains(&field.as_str()) {
+                anyhow::bail!(
+                    "Cannot clear '{}'. Valid fields: {}",
+                    field,
+                    CLEARABLE_FIELDS.join(", ")
+                );
+            }
+        }
+
+        let mut projects = storage.load_projects().context("Failed to load projects")?;
+
+        let project = projects
+            .iter_mut()
+            .find(|p| p.id == args.id)
+            .ok_or_else(|| anyhow::anyhow!("Project with ID {} not found", args.id))?;
+
+        let mut changes: Vec<String> = Vec::new();
+
+        // Update title
+        if let Some(title) = &args.title {
+            let old = project.title.clone();
+            project.update_title(title.clone());
+            changes.push(format!("title: \"{}\" → \"{}\"", old, title));
+        }
+
+        // Update description
+        if let Some(desc) = &args.description {
+            let old = project.description.clone().unwrap_or_default();
+            project.update_description(Some(desc.clone()));
+            changes.push(format!("description: \"{}\" → \"{}\"", old, desc));
+        }
+
+        // Update milestone
+        if let Some(milestone) = &args.milestone {
+            let old = project.milestone.clone().unwrap_or_default();
+            project.update_milestone(Some(milestone.clone()));
+            changes.push(format!("milestone: \"{}\" → \"{}\"", old, milestone));
+        }
+
+        // Update URL
+        if let Some(url) = &args.url {
+            let old = project.url.clone().unwrap_or_default();
+            project.set_url(Some(url.clone()));
+            changes.push(format!("url: \"{}\" → \"{}\"", old, url));
+        }
+
+        // Update repo
+        if let Some(repo) = &args.repo {
+            let old = project.repo.clone().unwrap_or_default();
+            project.set_repo(Some(repo.clone()));
+            changes.push(format!("repo: \"{}\" → \"{}\"", old, repo));
+        }
+
+        // Update status
+        if let Some(status) = &args.status {
+            let old = project.status.clone();
+            project.set_status(status.clone());
+            changes.push(format!("status: {} → {}", old, status));
+        }
+
+        // Clear fields
+        for field in &args.clear {
+            match field.as_str() {
+                "description" => {
+                    project.update_description(None);
+                    changes.push("description: cleared".to_string());
+                }
+                "milestone" => {
+                    project.update_milestone(None);
+                    changes.push("milestone: cleared".to_string());
+                }
+                "url" => {
+                    project.set_url(None);
+                    changes.push("url: cleared".to_string());
+                }
+                "repo" => {
+                    project.set_repo(None);
+                    changes.push("repo: cleared".to_string());
+                }
+                _ => unreachable!(),
+            }
+        }
+
+        if changes.is_empty() {
+            println!("No changes specified for project {}", args.id);
+            println!("Use --help to see available options.");
+            return Ok(());
+        }
+
+        storage
+            .save_projects(&projects)
+            .context("Failed to save projects")?;
+
+        println!("✅ Updated project {}:", args.id);
+        for change in &changes {
+            println!("   {}", change);
+        }
+
         Ok(())
     }
 
