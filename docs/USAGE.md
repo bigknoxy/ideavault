@@ -324,10 +324,38 @@ export EDITOR="emacs"         # Emacs
 | `ideavault idea list --status Active` | List ideas by status |
 | `ideavault idea list --tag <tag>` | List ideas by tag |
 | `ideavault idea show <id>` | Show idea details |
-| `ideavault idea status <id> <status>` | Update idea status |
+| `ideavault idea update <id> [flags]` | Update idea fields |
+| `ideavault idea status <id> <status>` | Quick status update |
 | `ideavault idea tag <id> <tags...>` | Update idea tags |
 | `ideavault idea edit <id>` | Edit idea in $EDITOR |
 | `ideavault idea delete <id>` | Delete an idea |
+
+#### Updating Ideas
+
+Update one or more fields of an existing idea:
+
+```bash
+# Update title
+ideavault idea update <id> --title "New Title"
+
+# Update description
+ideavault idea update <id> --description "New description"
+
+# Update status
+ideavault idea update <id> --status Active
+
+# Update multiple fields at once
+ideavault idea update <id> --title "New" --description "Updated description"
+
+# Clear optional fields
+ideavault idea update <id> --clear description
+```
+
+**Available flags:**
+- `--title` - Idea title
+- `--description` - Idea description
+- `--status` - Idea status (Brainstorming, Active, Completed, Archived)
+- `--clear <field>` - Clear an optional field (description)
 
 ### Projects
 
@@ -395,6 +423,7 @@ ideavault project status <id> InProgress
 | `ideavault task status <id> <status>` | Update task status |
 | `ideavault task priority <id> <priority>` | Update task priority |
 | `ideavault task due <id> <date>` | Set due date |
+| `ideavault task update <id> [flags]` | Update task fields |
 | `ideavault task link-project <task-id> <project-id>` | Link task to project |
 | `ideavault task link-idea <task-id> <idea-id>` | Link task to idea |
 | `ideavault task edit <id>` | Edit task in $EDITOR |
