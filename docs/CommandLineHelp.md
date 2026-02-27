@@ -36,6 +36,7 @@ This document contains the help content for the `ideavault` command-line program
 * [`ideavault task edit`↴](#ideavault-task-edit)
 * [`ideavault task delete`↴](#ideavault-task-delete)
 * [`ideavault search`↴](#ideavault-search)
+* [`ideavault version`↴](#ideavault-version)
 
 ## `ideavault`
 
@@ -49,6 +50,7 @@ A CLI tool for managing ideas and projects
 * `project` — Manage projects
 * `task` — Manage tasks
 * `search` — Search across ideas, projects, and tags
+* `version` — Show version information
 
 
 
@@ -504,6 +506,18 @@ Search across ideas, projects, and tags
 * `--with-tags <WITH_TAGS>` — Filter by tags (space-separated, multiple allowed)
 * `--from <DATE_FROM>` — Filter by date from (YYYY-MM-DD format)
 * `--to <DATE_TO>` — Filter by date to (YYYY-MM-DD format)
+
+
+
+## `ideavault version`
+
+Show version information
+
+**Usage:** `ideavault version [OPTIONS]`
+
+###### **Options:**
+
+* `-c`, `--check` — Check for updates
 
 
 
