@@ -40,6 +40,7 @@ pub enum TaskSubcommand {
     Edit(EditTaskArgs),
     /// Delete a task with confirmation
     Delete(DeleteTaskArgs),
+    Update(TaskUpdateArgs),
 }
 
 #[derive(Args)]
@@ -178,6 +179,40 @@ pub struct DeleteTaskArgs {
     force: bool,
 }
 
+#[derive(Args)]
+pub struct TaskUpdateArgs {
+    /// Task ID to update
+    pub id: Uuid,
+
+    /// New title
+    #[arg(short = 't', long = "title")]
+    pub title: Option<String>,
+
+    /// New description
+    #[arg(short = 'd', long = "description")]
+    pub description: Option<String>,
+
+    /// New priority (low|medium|high|urgent)
+    #[arg(short = 'p', long = "priority")]
+    pub priority: Option<TaskPriority>,
+
+    /// New due date (YYYY-MM-DD format) or "clear" to remove
+    #[arg(short = 'D', long = "due")]
+    pub due_date: Option<String>,
+
+    /// New status (todo|inprogress|blocked|done|cancelled)
+    #[arg(short = 's', long = "status")]
+    pub status: Option<TaskStatus>,
+
+    /// New tags (comma-separated, replaces existing tags)
+    #[arg(short = 'g', long = "tags", value_delimiter = ',')]
+    pub tags: Option<Vec<String>>,
+
+    /// Clear one or more optional fields (description, due_date, tags)
+    #[arg(long = "clear", value_name = "FIELD")]
+    pub clear: Vec<String>,
+}
+
 impl TaskCommands {
     pub fn execute(&self) -> Result<()> {
         let storage = Storage::new().context("Failed to initialize storage")?;
@@ -195,6 +230,7 @@ impl TaskCommands {
             TaskSubcommand::UnlinkIdea(args) => Self::unlink_idea(&storage, args),
             TaskSubcommand::Edit(args) => Self::edit_task(&storage, args),
             TaskSubcommand::Delete(args) => Self::delete_task(&storage, args),
+            TaskSubcommand::Update(args) => Self::update_task(&storage, args),
         }
     }
 
@@ -585,6 +621,120 @@ impl TaskCommands {
         storage.save_tasks(&tasks).context("Failed to save tasks")?;
 
         println!("✅ Deleted task: {}", deleted_task.title);
+        Ok(())
+    }
+
+    pub fn update_task(storage: &Storage, args: &TaskUpdateArgs) -> Result<()> {
+        const CLEARABLE_FIELDS: [&str; 3] = ["description", "due_date", "tags"];
+
+        // Validate clear fields
+        for field in &args.clear {
+            if !CLEARABLE_FIELDS.contains(&field.as_str()) {
+                anyhow::bail!(
+                    "Cannot clear '{}'. Valid fields: {}",
+                    field,
+                    CLEARABLE_FIELDS.join(", ")
+                );
+            }
+        }
+
+        let mut tasks = storage.load_tasks().context("Failed to load tasks")?;
+
+        let task = tasks
+            .iter_mut()
+            .find(|t| t.id == args.id)
+            .ok_or_else(|| anyhow::anyhow!("Task with ID {} not found", args.id))?;
+
+        let mut changes: Vec<String> = Vec::new();
+
+        // Update title
+        if let Some(title) = &args.title {
+            let old = task.title.clone();
+            task.update_title(title.clone());
+            changes.push(format!("title: \"{}\" → \"{}\"", old, title));
+        }
+
+        // Update description
+        if let Some(desc) = &args.description {
+            let old = task.description.clone().unwrap_or_default();
+            task.update_description(Some(desc.clone()));
+            changes.push(format!("description: \"{}\" → \"{}\"", old, desc));
+        }
+
+        // Update priority
+        if let Some(priority) = &args.priority {
+            let old = task.priority.clone();
+            task.set_priority(priority.clone());
+            changes.push(format!("priority: {} → {}", old, priority));
+        }
+
+        // Update status
+        if let Some(status) = &args.status {
+            let old = task.status.clone();
+            task.set_status(status.clone());
+            changes.push(format!("status: {} → {}", old, status));
+        }
+
+        // Update due date
+        if let Some(due_date_str) = &args.due_date {
+            if due_date_str.to_lowercase() == "clear" {
+                task.set_due_date(None);
+                changes.push("due_date: cleared".to_string());
+            } else {
+                let naive_date = NaiveDate::parse_from_str(due_date_str, "%Y-%m-%d")
+                    .map_err(|_| anyhow::anyhow!("Invalid date format. Use YYYY-MM-DD"))?;
+                let due_date = DateTime::<Utc>::from_naive_utc_and_offset(
+                    naive_date.and_hms_opt(0, 0, 0).unwrap(),
+                    Utc,
+                );
+                let old = task
+                    .due_date
+                    .map(|d| d.format("%Y-%m-%d").to_string())
+                    .unwrap_or_else(|| "none".to_string());
+                task.set_due_date(Some(due_date));
+                changes.push(format!("due_date: {} → {}", old, due_date_str));
+            }
+        }
+
+        // Update tags
+        if let Some(tags) = &args.tags {
+            let old_tags = task.tags.clone();
+            task.update_tags(tags.clone());
+            changes.push(format!("tags: {:?} → {:?}", old_tags, tags));
+        }
+
+        // Clear fields
+        for field in &args.clear {
+            match field.as_str() {
+                "description" => {
+                    task.update_description(None);
+                    changes.push("description: cleared".to_string());
+                }
+                "due_date" => {
+                    task.set_due_date(None);
+                    changes.push("due_date: cleared".to_string());
+                }
+                "tags" => {
+                    task.update_tags(Vec::new());
+                    changes.push("tags: cleared".to_string());
+                }
+                _ => unreachable!(),
+            }
+        }
+
+        if changes.is_empty() {
+            println!("No changes specified for task {}", args.id);
+            println!("Use --help to see available options.");
+            return Ok(());
+        }
+
+        storage.save_tasks(&tasks).context("Failed to save tasks")?;
+
+        println!("✅ Updated task {}:", args.id);
+        for change in &changes {
+            println!("   {}", change);
+        }
+
         Ok(())
     }
 }

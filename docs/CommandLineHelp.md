@@ -37,6 +37,7 @@ This document contains the help content for the `ideavault` command-line program
 * [`ideavault task unlink-idea`↴](#ideavault-task-unlink-idea)
 * [`ideavault task edit`↴](#ideavault-task-edit)
 * [`ideavault task delete`↴](#ideavault-task-delete)
+* [`ideavault task update`↴](#ideavault-task-update)
 * [`ideavault search`↴](#ideavault-search)
 * [`ideavault version`↴](#ideavault-version)
 
@@ -362,6 +363,7 @@ Manage tasks
 * `unlink-idea` — Unlink task from idea
 * `edit` — Edit a task in $EDITOR
 * `delete` — Delete a task with confirmation
+* `update` — 
 
 
 
@@ -529,6 +531,26 @@ Delete a task with confirmation
 ###### **Options:**
 
 * `-f`, `--force` — Skip confirmation prompt
+
+
+
+## `ideavault task update`
+
+**Usage:** `ideavault task update [OPTIONS] <ID>`
+
+###### **Arguments:**
+
+* `<ID>` — Task ID to update
+
+###### **Options:**
+
+* `-t`, `--title <TITLE>` — New title
+* `-d`, `--description <DESCRIPTION>` — New description
+* `-p`, `--priority <PRIORITY>` — New priority (low|medium|high|urgent)
+* `-D`, `--due <DUE_DATE>` — New due date (YYYY-MM-DD format) or "clear" to remove
+* `-s`, `--status <STATUS>` — New status (todo|inprogress|blocked|done|cancelled)
+* `-g`, `--tags <TAGS>` — New tags (comma-separated, replaces existing tags)
+* `--clear <FIELD>` — Clear one or more optional fields (description, due_date, tags)
 
 
 

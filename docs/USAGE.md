@@ -429,6 +429,42 @@ ideavault project status <id> InProgress
 | `ideavault task edit <id>` | Edit task in $EDITOR |
 | `ideavault task delete <id>` | Delete a task |
 
+#### Updating Tasks
+
+Update one or more fields of an existing task:
+
+```bash
+# Update title
+ideavault task update <id> --title "New Title"
+
+# Update multiple fields at once
+ideavault task update <id> --title "Updated" --priority high --status inprogress
+
+# Update due date
+ideavault task update <id> --due 2024-02-15
+
+# Clear due date
+ideavault task update <id> --due clear
+
+# Clear optional fields
+ideavault task update <id> --clear description --clear tags
+
+# Update tags (replaces existing tags)
+ideavault task update <id> --tags "work,urgent"
+
+# Mix updates and clears
+ideavault task update <id> --title "Updated" --clear due_date
+```
+
+**Available flags:**
+- `--title` - Task title
+- `--description` - Task description
+- `--priority` - Task priority (low|medium|high|urgent)
+- `--due` - Due date (YYYY-MM-DD format) or "clear" to remove
+- `--status` - Task status (todo|inprogress|blocked|done|cancelled)
+- `--tags` - Tags (comma-separated, replaces existing tags)
+- `--clear <field>` - Clear an optional field (description, due_date, tags)
+
 ### Search
 
 | Command | Description |
