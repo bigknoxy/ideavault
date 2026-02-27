@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2026-02-27
+
+### Features
+
+- Add `idea update` command for updating idea fields
+- Add `task update` command for updating task fields
+- Add `--clear <field>` flag to both update commands for clearing optional fields
+- Add model update methods to Task (`update_title`, `update_description`, `set_priority`, `set_due_date`)
+
+### Documentation
+
+- Update USAGE.md with idea and task update examples
+
+## [0.2.5] - 2026-02-27
+
+### Features
+
+- Add `project update` command for updating project fields
+- Add `--url` and `--repo` flags to `project new` command
+- Add `--clear <field>` flag to `project update` for clearing optional fields
+- Display url and repo in `project show` output
+- Add CI workflow for automated PR checks (lint, build, test)
+
+### Documentation
+
+- Add OpenCode skills for project conventions and release process
+- Fix USAGE.md command examples (use `new` instead of `create`)
+- Update AGENTS.md with current version
+
 ## [0.2.4] - 2026-02-27
 
 ### Features
