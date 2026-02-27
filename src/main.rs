@@ -27,6 +27,9 @@ fn main() -> Result<()> {
         ideavault::cli::Commands::Search(search_args) => {
             execute_search(search_args)?;
         }
+        ideavault::cli::Commands::Version(version_args) => {
+            ideavault::commands::version::execute(version_args)?;
+        }
     }
 
     Ok(())

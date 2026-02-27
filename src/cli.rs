@@ -1,4 +1,4 @@
-use crate::commands::{IdeaCommands, ProjectCommands, TaskCommands};
+use crate::commands::{IdeaCommands, ProjectCommands, TaskCommands, VersionArgs};
 use clap::{Args, Parser};
 
 #[derive(Parser)]
@@ -24,6 +24,8 @@ pub enum Commands {
     Task(TaskCommands),
     /// Search across ideas, projects, and tags
     Search(SearchArgs),
+    /// Show version information
+    Version(VersionArgs),
 }
 
 #[derive(Args)]
