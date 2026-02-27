@@ -118,6 +118,12 @@ impl Config {
     }
 }
 
+impl Default for Config {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Default for BackupConfig {
     fn default() -> Self {
         Self {
