@@ -32,6 +32,8 @@ pub enum IdeaSubcommand {
     Edit(EditIdeaArgs),
     /// Delete an idea with confirmation
     Delete(DeleteIdeaArgs),
+    /// Update idea fields (title, description, status)
+    Update(IdeaUpdateArgs),
 }
 
 #[derive(Args)]
@@ -99,6 +101,28 @@ pub struct DeleteIdeaArgs {
     force: bool,
 }
 
+#[derive(Args)]
+pub struct IdeaUpdateArgs {
+    /// Idea ID to update
+    pub id: Uuid,
+
+    /// New title
+    #[arg(short = 't', long = "title")]
+    pub title: Option<String>,
+
+    /// New description
+    #[arg(short = 'd', long = "description")]
+    pub description: Option<String>,
+
+    /// New status
+    #[arg(short = 's', long = "status")]
+    pub status: Option<IdeaStatus>,
+
+    /// Clear one or more optional fields (description)
+    #[arg(long = "clear", value_name = "FIELD")]
+    pub clear: Vec<String>,
+}
+
 impl IdeaCommands {
     pub fn execute(&self) -> Result<()> {
         let storage = Storage::new().context("Failed to initialize storage")?;
@@ -111,6 +135,7 @@ impl IdeaCommands {
             IdeaSubcommand::Status(args) => Self::update_status(&storage, args),
             IdeaSubcommand::Edit(args) => Self::edit_idea(&storage, args),
             IdeaSubcommand::Delete(args) => Self::delete_idea(&storage, args),
+            IdeaSubcommand::Update(args) => Self::update_idea(&storage, args),
         }
     }
 
@@ -336,6 +361,77 @@ impl IdeaCommands {
         storage.save_ideas(&ideas).context("Failed to save ideas")?;
 
         println!("✅ Deleted idea: {}", deleted_idea.title);
+        Ok(())
+    }
+
+    pub fn update_idea(storage: &Storage, args: &IdeaUpdateArgs) -> Result<()> {
+        const CLEARABLE_FIELDS: [&str; 1] = ["description"];
+
+        // Validate clear fields
+        for field in &args.clear {
+            if !CLEARABLE_FIELDS.contains(&field.as_str()) {
+                anyhow::bail!(
+                    "Cannot clear '{}'. Valid fields: {}",
+                    field,
+                    CLEARABLE_FIELDS.join(", ")
+                );
+            }
+        }
+
+        let mut ideas = storage.load_ideas().context("Failed to load ideas")?;
+
+        let idea = ideas
+            .iter_mut()
+            .find(|i| i.id == args.id)
+            .ok_or_else(|| anyhow::anyhow!("Idea with ID {} not found", args.id))?;
+
+        let mut changes: Vec<String> = Vec::new();
+
+        // Update title
+        if let Some(title) = &args.title {
+            let old = idea.title.clone();
+            idea.update_title(title.clone());
+            changes.push(format!("title: \"{}\" → \"{}\"", old, title));
+        }
+
+        // Update description
+        if let Some(desc) = &args.description {
+            let old = idea.description.clone().unwrap_or_default();
+            idea.update_description(Some(desc.clone()));
+            changes.push(format!("description: \"{}\" → \"{}\"", old, desc));
+        }
+
+        // Update status
+        if let Some(status) = &args.status {
+            let old = idea.status.clone();
+            idea.set_status(status.clone());
+            changes.push(format!("status: {} → {}", old, status));
+        }
+
+        // Clear fields
+        for field in &args.clear {
+            match field.as_str() {
+                "description" => {
+                    idea.update_description(None);
+                    changes.push("description: cleared".to_string());
+                }
+                _ => unreachable!(),
+            }
+        }
+
+        if changes.is_empty() {
+            println!("No changes specified for idea {}", args.id);
+            println!("Use --help to see available options.");
+            return Ok(());
+        }
+
+        storage.save_ideas(&ideas).context("Failed to save ideas")?;
+
+        println!("✅ Updated idea {}:", args.id);
+        for change in &changes {
+            println!("   {}", change);
+        }
+
         Ok(())
     }
 }

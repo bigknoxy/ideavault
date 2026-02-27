@@ -13,6 +13,7 @@ This document contains the help content for the `ideavault` command-line program
 * [`ideavault idea status`↴](#ideavault-idea-status)
 * [`ideavault idea edit`↴](#ideavault-idea-edit)
 * [`ideavault idea delete`↴](#ideavault-idea-delete)
+* [`ideavault idea update`↴](#ideavault-idea-update)
 * [`ideavault project`↴](#ideavault-project)
 * [`ideavault project new`↴](#ideavault-project-new)
 * [`ideavault project list`↴](#ideavault-project-list)
@@ -70,6 +71,7 @@ Manage ideas
 * `status` — Update the status of an idea
 * `edit` — Edit an idea in $EDITOR
 * `delete` — Delete an idea with confirmation
+* `update` — Update idea fields (title, description, status)
 
 
 
@@ -166,6 +168,25 @@ Delete an idea with confirmation
 ###### **Options:**
 
 * `-f`, `--force` — Skip confirmation prompt
+
+
+
+## `ideavault idea update`
+
+Update idea fields (title, description, status)
+
+**Usage:** `ideavault idea update [OPTIONS] <ID>`
+
+###### **Arguments:**
+
+* `<ID>` — Idea ID to update
+
+###### **Options:**
+
+* `-t`, `--title <TITLE>` — New title
+* `-d`, `--description <DESCRIPTION>` — New description
+* `-s`, `--status <STATUS>` — New status
+* `--clear <FIELD>` — Clear one or more optional fields (description)
 
 
 
