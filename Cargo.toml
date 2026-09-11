@@ -12,7 +12,7 @@ uuid = { version = "1.6", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 directories = "6.0"
 anyhow = "1.0"
-thiserror = "1.0"
+thiserror = "2.0"
 ureq = { version = "2.9", features = ["json"] }
 
 [dev-dependencies]
